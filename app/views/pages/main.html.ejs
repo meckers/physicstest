@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/screen.css" />
+    <script src="/scripts/lib/simple-javascript-inheritance.js"></script>
+    <script src="/scripts/lib/underscore-min.js"></script>
+    <script src="/scripts/lib/jquery-1.10.2.min.js"></script>
+    <script data-main="/scripts/main.js" language="javascript" src="/scripts/lib/require.js"></script>
+    <script>
+        require.config({
+            paths: {
+                'baseUrl': '/public/scripts'
+            },
+            "packages": [
+                {
+                    "name": 'physicsjs',
+                    "location": '/scripts/lib',
+                    "main": 'physicsjs-full.min'
+                }
+            ]
+        });
+    </script>
+  </head>
+  <body>
+    <div class="heart-indicator"></div>
+    <div id="physics-arena"></div>
+  </body>
+</html>
