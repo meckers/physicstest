@@ -1,9 +1,9 @@
 define([
-    'controller/sample',
     'controller/mediator',
-    'controller/mine-controller'
+    'controller/mine-controller',
+    'controller/physics-controller'
 ],
-    function(SampleController, Mediator, MineController) {
+    function(Mediator, MineController, PhysicsController) {
 
         return {
 
@@ -17,6 +17,7 @@ define([
             startApp: function() {
                 Mediator.init();
                 MineController.init();
+                PhysicsController.init();
             }
 
         };

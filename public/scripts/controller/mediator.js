@@ -1,18 +1,13 @@
 define([
     'lib/events',
-    'controller/time',
-    'ui/physics-arena'
-], function(Events, Time, PhysicsArena) {
+    'controller/time'
+], function(Events, Time) {
 
         return {
 
             init: function() {
                 this.listen();
                 Time.init();
-
-                if ($('.physics-arena')) {
-                    this.physicsArena = new PhysicsArena();
-                }
             },
 
             listen: function() {

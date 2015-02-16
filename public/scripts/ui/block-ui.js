@@ -4,9 +4,15 @@ define(['lib/events'], function(Events) {
 
         blockWidth: 5,
         blockHeight: 8,
+        clickHandler: null,
 
         init: function() {
             this.$el = this.create();
+            this.listen();
+        },
+
+        listen: function() {
+            this.clickHandler = this.$el.bind('click', _.bind(this.onClick, this));
         },
 
         create: function() {
@@ -15,6 +21,11 @@ define(['lib/events'], function(Events) {
 
         getElement: function() {
             return this.$el;
+        },
+
+        onClick: function() {
+            this.$el.css('background-color', 'white');
+            this.$el.unbind('click');
         }
 
     });
