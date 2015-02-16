@@ -1,8 +1,9 @@
 define([
     'controller/sample',
-    'controller/mediator'
+    'controller/mediator',
+    'controller/mine-controller'
 ],
-    function(SampleController, Mediator) {
+    function(SampleController, Mediator, MineController) {
 
         return {
 
@@ -15,6 +16,7 @@ define([
              */
             startApp: function() {
                 Mediator.init();
+                MineController.init();
             }
 
         };

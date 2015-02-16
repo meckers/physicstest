@@ -12,5 +12,21 @@ a {
     width: 1000px;
     height: 800px;
     border: 1px solid black;
+    position: relative;
 
+}
+
+#mine {
+    width: 102px;
+    height: 102px;
+    border: 1px solid black;
+    border-top: none;
+}
+
+.block {
+    float: left;
+    width: 20px;
+    height: 20px;
+    background-color: #ef0210;
+    z-index: 10000;
 }
