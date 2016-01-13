@@ -27,7 +27,6 @@ define([
 
         addBlockUIs: function() {
             for (var i=0; i<this.mine.size(); i++) {
-                console.log('appending', this.mine.blocks[i]);
                 var blockUI = new BlockUI();
                 this.ui.addBlockUI(blockUI);
             }

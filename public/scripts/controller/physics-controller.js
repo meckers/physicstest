@@ -1,18 +1,19 @@
 define([
     'lib/events',
-    'physicsjs'
+    'physicsjs',
 ], function(Events, Physics) {
 
     return {
 
         width: 1000,
         height: 800,
+        blocks: [],
+        movedBodies: [],
 
         init: function() {
             this.initRenderer();
             this.initWorld();
             this.listen();
-            //this.addObjects();
             this.start();
         },
 
@@ -27,7 +28,7 @@ define([
                     'circle': {
                         strokeStyle: '#351024',
                         lineWidth: 1,
-                        fillStyle: '#d33682',
+                        fillStyle: '#ef0210',
                         angleIndicator: '#351024'
                     }
                 }
@@ -36,9 +37,13 @@ define([
 
         initWorld: function() {
             this.viewportBounds = Physics.aabb(0, 0, this.width, this.height);
-            this.world = Physics({
-            });
+            this.world = Physics({});
             this.world.add(this.renderer);
+            this.addBehaviors();          
+            this.addStaticBodies();      
+        },
+
+        addBehaviors: function() {
             this.world.add(Physics.behavior('edge-collision-detection', {
                 aabb: this.viewportBounds,
                 restitution: 0.29,
@@ -46,13 +51,16 @@ define([
             }));
 
             // ensure objects bounce when edge collision is detected
-            this.world.add( Physics.behavior('body-impulse-response') );
+            this.world.add(Physics.behavior('body-impulse-response') );
 
             // add some gravity
-            this.world.add( Physics.behavior('constant-acceleration') );
+            this.world.add( Physics.behavior('constant-acceleration', {
+                acc: { x : 0, y: 0.0006 }
+            }));
 
             this.world.add(Physics.behavior('body-collision-detection'));
             this.world.add(Physics.behavior('sweep-prune'));
+            this.world.add(Physics.behavior('interactive', { el: this.renderer.el }));            
         },
 
         listen: function() {
@@ -72,50 +80,85 @@ define([
                 this.world.render();
             }, this));
 
+            // if a body is released over the keep bin, keep it
+            this.world.on('interact:release', function(data) {            
+                /*if (data.x > 700) {
+                    window.setTimeout(function() {
+                        // todo: code to add block to inventory
+                        me.world.removeBody(data.body); // todo: fade out
+                    }, 1000);
+                }*/
+                data.body.moved = true;
+            });   
+
+            // enable grabbing and moving blocks
+            this.world.on('interact:grab', function(data) {
+                console.log('grabbed', data);
+            });
+
+            this.startBodyCheck();
+
+        },
+
+        addStaticBodies: function() {
+            var wall = Physics.body('rectangle', {
+                x: 600, // x-coordinate
+                y: 650, // y-coordinate
+                height: 300,
+                width: 20
+            });
+
+            wall.treatment = 'static';
+
+            this.world.add(wall);
+        },
+
+        startBodyCheck: function() {
+            var me = this;
+            window.setInterval(function() {
+                var bodies = me.world.getBodies();
+                $(bodies).each(function(i,e) {
+                    if (e.bodyType === 'block' && e.moved && e.sleep() && e.state.pos.x > 600) {                        
+                        me.removeBody(e, 500);
+                    }
+                });
+            }, 2000);
+        },
+
+        removeBody: function(body, delay) {
+            var me = this;
+            window.setTimeout(function() {
+                console.log('Removing body', body);
+                me.world.removeBody(body);
+            }, delay);
         },
 
         throwBlock: function(e) {
 
             var sourceY = $(e).offset().top;
             var sourceX = $(e).offset().left;
-
-            console.log('throwing block from', sourceY, sourceX);
-
             var vx = 0.1 + Math.random()/10;
             var vy = -0.5 + Math.random()/10;
 
-            this.testRect = Physics.body('rectangle', {
+            console.log('throwing block from', sourceY, sourceX, vy, vx);
+
+            var block = Physics.body('rectangle', {
                 x: sourceX, // x-coordinate
                 y: sourceY, // y-coordinate
                 vx: vx, // velocity in x-direction
                 vy: vy, // velocity in y-direction
-                height: 20,
-                width: 20
+                height: 40,
+                width: 40
             });
 
-            this.world.add(this.testRect);
-        },
+            block.bodyType = 'block';
 
-        addObjects: function() {
-            // add a circle
+            block.view = new Image();
+            block.view.src = 'images/icon2.png';
 
-            this.testRect = Physics.body('rectangle', {
-                x: 100, // x-coordinate
-                y: 700, // y-coordinate
-                vx: 0, // velocity in x-direction
-                vy: 0, // velocity in y-direction
-                height: 20,
-                width: 20
-            });
+            this.world.add(block);
+            this.blocks.push(block);
 
-            this.world.add(this.testRect);
-
-            window.setTimeout(_.bind(function(){
-                //this.testRect.state.vel.set(.1,-.5); // move right and upward
-
-                var acc = new Physics.vector(0.1, 0.1);
-                this.testRect.accelerate(acc);
-            }, this), 1000);
         },
 
         start: function() {

@@ -24,7 +24,8 @@ define(['lib/events'], function(Events) {
         },
 
         onClick: function() {
-            this.$el.css('background-color', 'white');
+            //this.$el.css('background-color', 'white');
+            this.$el.css('opacity', '0');
             this.$el.unbind('click');
         }
 

@@ -18,19 +18,36 @@ a {
 
 #mine {
     position: absolute;
-    top: 300px;
-    left: 300px;
+    top: 400px;
+    left: 100px;
     z-index: 10000;
-    width: 102px;
-    height: 102px;
+    width: 202px;
+    height: 202px;
     border: 1px solid black;
     border-top: none;
 }
 
 .block {
     float: left;
-    width: 20px;
-    height: 20px;
+    width: 40px;
+    height: 40px;
     background-color: #ef0210;
     z-index: 10000;
+}
+
+.block:hover {
+    background-color: #EC6870;
+}
+
+#keep-bin {
+    position: absolute;
+    left: 626px;
+    bottom: 117px;
+    width: 161px;
+    border: 1px solid gray;
+    border-width: 0px 1px 1px 1px;
+    border-color: gray;
+    color: gray;
+    padding: 100px;
+    text-align: center;
 }
