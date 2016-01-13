@@ -66,6 +66,8 @@ define([
         listen: function() {
 
             var me = this;
+
+            // todo: raise this from outside this controller, like in the mine controller (i.e. "blockDigged")
             $('.block').on('click', function(e) {
                 me.throwBlock(e.target);
                 //e.target.remove();
@@ -80,14 +82,8 @@ define([
                 this.world.render();
             }, this));
 
-            // if a body is released over the keep bin, keep it
+            // if a body is released over the keep bin mark it as moved
             this.world.on('interact:release', function(data) {            
-                /*if (data.x > 700) {
-                    window.setTimeout(function() {
-                        // todo: code to add block to inventory
-                        me.world.removeBody(data.body); // todo: fade out
-                    }, 1000);
-                }*/
                 data.body.moved = true;
             });   
 
@@ -113,12 +109,14 @@ define([
             this.world.add(wall);
         },
 
+        // iterates the blocks and decides which ones to keep
         startBodyCheck: function() {
             var me = this;
             window.setInterval(function() {
                 var bodies = me.world.getBodies();
                 $(bodies).each(function(i,e) {
-                    if (e.bodyType === 'block' && e.moved && e.sleep() && e.state.pos.x > 600) {                        
+                    if (e.bodyType === 'block' && e.moved && e.sleep() && e.state.pos.x > 600) {  
+                        // todo: raise event to add a block to the inventory                     
                         me.removeBody(e, 500);
                     }
                 });
